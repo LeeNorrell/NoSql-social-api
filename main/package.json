@@ -2,11 +2,10 @@
   "name": "nosql-social-api",
   "version": "1.0.0",
   "description": "mongoose back-end challenge",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node index",
-    "dev": "nodemon index",
-    "seed": "node utils/seed"
+    "start": "node server",
+    "dev": "nodemon server"
   },
   "dependencies": {
     "express": "^4.17.1",
