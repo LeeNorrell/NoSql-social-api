@@ -1,4 +1,4 @@
-const { Timestamp } = require('bson');
+
 const { Schema, Types } = require('mongoose');
 
 const reactionSchema = new Schema(
@@ -7,7 +7,7 @@ const reactionSchema = new Schema(
             type: Schema.Types.ObjectId,
             default: () => new Types.ObjectId(),
         },
-        reactionBody: {
+        reactionbody: {
             type: String,
             required: true,
             max_length: 280,
@@ -19,14 +19,13 @@ const reactionSchema = new Schema(
         createdAt: {
             type: Date,
             default: Date.now,
-            get: (timestamp) => formatDate(timestamp)
             },
         },
     {
-        id: false,
         toJSON: {
             getters: true
         },
+        id: false
     });
 
     module.exports = reactionSchema;

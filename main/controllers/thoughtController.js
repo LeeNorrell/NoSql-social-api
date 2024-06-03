@@ -1,10 +1,11 @@
-const { Thought } = require('../models');
+const { Thought, User } = require('../models');
 
 module.exports = {
-    async getThoughts(req, res) {
+    async getThoughts(req, res) { 
         try {
-            const thought = await Thought.find();
-            res.json(thought);
+            const thoughts = await Thought.find();
+          res.status(200).json(thoughts);
+          
         } catch (err) {
             res.status(500).json(err);
         }
@@ -16,7 +17,7 @@ module.exports = {
             if (!thought) {
                 return res.status(404).json({ message: 'No thought with that ID ' });
             }
-            res.status(200).json({ message: 'Thought found' });
+            res.status(200).json(thought);
         } catch (err) {
             res.status(500).json(err);
         }
@@ -24,17 +25,22 @@ module.exports = {
     async createThought(req, res) {
         try {
             const thought = await Thought.create(req.body);
-            if(!thought) {
+            const updateUserByAddingThought = await User.findOneAndUpdate(
+                { _id: req.body.userId},
+                { $push: { thoughts: thought._id } },
+                { new: true }
+            );
+            if(!updateUserByAddingThought) {
                 return res.status(404).json({ message: 'No thought created' })
             }
-            res.status(200).json({ message: 'Thought created' });
+            res.status(200).json(updateUserByAddingThought);
         } catch (err) {
             res.status(500).json(err);
         }
     },
     async updateThought(req, res) {
         try {
-            const thought = await Thought.findOneAndUpdate({ _id: req.params.thoughtId }, { $pull: { thoughts: req.params.thoughtId } },
+            const thought = await Thought.findOneAndUpdate({ _id: req.params.thoughtId }, { $set: req.body },
                 { runValidators: true, new: true });
             if (!thought) {
                 return res.status(404).json({
@@ -59,14 +65,15 @@ module.exports = {
     },
     async addReaction(req,res) {
         try {
-            const thought = await thought.findOneAndUpdate({ _id: req.params.thoughtId }, { $push: { raections: req.params.reactionId } },
+            const thought = await Thought.findOneAndUpdate({ _id: req.params.thoughtId }, { $push: { reactions: req.body } },
                 { runValidators: true, new: true });
-            if(!user) {
+            if(!thought) {
                 return res.status(404).json({ message: 'No reaction created' })
             }
-            res.status(200).json({ message: 'Reaction created' });
+            res.status(200).json(thought);
         } catch (err) {
             res.status(500).json(err);
+          
         }
         
     },
